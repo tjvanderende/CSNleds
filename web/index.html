@@ -2,26 +2,67 @@
 
 <head>
 	<script src="node_modules/socket.io-client/socket.io.js"></script>
+	<script src="node_modules/jquery/dist/jquery.min.js"></script>
 	<script>
-        var socket = io.connect('http://boiling-peak-90026.herokuapp.com/');
+        var socket = io.connect('http://localhost:5000');
+
+        /**
+        * Socket IO listeners
+        **/
 
         socket.on('connect', function() {
-            socket.emit('lighton');
-            console.log('check 2', socket.connected);
+            /**
+            * Geef aan de gebruiker door dat er een connectie is.
+            **/
+            $('#status').html('connected');
         });
-        socket.on('led', function(){
-            console.log("led");
+        socket.on('disconnect', function(){
+            /**
+            * Geef aan de gebruiker door dat er geen connectie is.
+            **/
+            $('#status').html('disconnected');
         });
-        function test(){
-            socket.emit('lighton');
-            console.log("test");
-        }
+
+        /**
+        * De client ontvangt een bericht van de PI.
+        * Er wordt een lamp aan of uitgezet.
+        * data is een object met de volgende sleutels: 
+        * Led: De id van de led. (integer)
+        * Status: De status van de led (integer, 1 = aan, 0 = uit);
+        **/
+        socket.on('led_switch', function(data){
+            $element = $('[data-led="'+data.led+'"]');
+            $element.toggleClass("off", data.status == 1);
+            $element.toggleClass("on", data.status == 0);
+        });
+
+
+
+        /**
+        * Wacht totdat dom klaar is met laden.
+        **/
+        $(function(){
+            /**
+            * Jquery listeners
+            **/
+            $('.lichtknop').on('click', function(){
+                var ledId = $(this).data('led') | 0; // haal led id op.
+                var ledStatus = $(this).hasClass('on') | 0; // wanneer on bestaat return 1 in andere gevallen 0.
+                var data = {led:ledId, status: ledStatus};
+                socket.emit('led_switch', {led: ledId, ledStatus}); // emit event.
+            });
+        });
+
+
+
         </script>
 
 </head>
 
 <body>
-	<button onClick="test()">test</button>
+	<h1>Status: <span id="status">disconnected</span></h1>
+	<button data-led="1" class="lichtknop">test</button>
+
 </body>
 
 </html>

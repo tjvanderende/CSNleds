@@ -26,11 +26,11 @@ io.on('connection', function (socket) {
   console.log("Client connected");
   console.log(Object.keys(io.engine.clients))
   socket.on('disconnect', function(){
-    console.log("disconnected client!");
+    console.log("Client disconnected");
   });
-  socket.on('lighton', function (data) {
-    console.log("send data to other clients");
-    io.emit('led');
+  socket.on('led_switch', function (data) {
+    console.log(data);
+    socket.broadcast.emit('led', data); // { led: id van ledje, status: 1 == aan, 0 == uit }
   });
 
 });
