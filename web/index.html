@@ -1,0 +1,27 @@
+<html>
+
+<head>
+	<script src="node_modules/socket.io-client/socket.io.js"></script>
+	<script>
+        var socket = io.connect('http://boiling-peak-90026.herokuapp.com/');
+
+        socket.on('connect', function() {
+            socket.emit('lighton');
+            console.log('check 2', socket.connected);
+        });
+        socket.on('led', function(){
+            console.log("led");
+        });
+        function test(){
+            socket.emit('lighton');
+            console.log("test");
+        }
+        </script>
+
+</head>
+
+<body>
+	<button onClick="test()">test</button>
+</body>
+
+</html>
