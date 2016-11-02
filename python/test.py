@@ -10,7 +10,5 @@ def on_aaa_response(*args):
 
 with SocketIO('http://boiling-peak-90026.herokuapp.com', port=None) as socketIO:
     socketIO.emit('lighton', 'new-tx')
-
     socketIO.on('led', on_aaa_response)
     socketIO.wait()
-
