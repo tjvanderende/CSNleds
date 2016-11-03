@@ -1,10 +1,13 @@
 <html>
 
 <head>
+    <link rel="stylesheet" href="test.css" />
+    <link rel="stylesheet" href="node_modules/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css" />
 	<script src="node_modules/socket.io-client/socket.io.js"></script>
 	<script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="node_modules/bootstrap-switch/dist/js/bootstrap-switch.min.js"></script>
 	<script>
-        var socket = io.connect('http://localhost:5000');
+        var socket = io.connect('https://boiling-peak-90026.herokuapp.com');
 
         /**
         * Socket IO listeners
@@ -30,10 +33,16 @@
         * Led: De id van de led. (integer)
         * Status: De status van de led (integer, 1 = aan, 0 = uit);
         **/
-        socket.on('led_switch', function(data){
+        socket.on('led_value', function(data){
+            console.log(data.status == "0.0");
             $element = $('[data-led="'+data.led+'"]');
-            $element.toggleClass("off", data.status == 1);
-            $element.toggleClass("on", data.status == 0);
+            if (data.value == "0.0"){
+                $element.removeClass("on");
+                $element.addClass("off");
+            } else {
+                $element.removeClass("off");
+                $element.addClass("on");
+            }
         });
 
 
@@ -47,10 +56,12 @@
             **/
             $('.lichtknop').on('click', function(){
                 var ledId = $(this).data('led') | 0; // haal led id op.
-                var ledStatus = $(this).hasClass('on') | 0; // wanneer on bestaat return 1 in andere gevallen 0.
-                var data = {led:ledId, status: ledStatus};
-                socket.emit('led_switch', {led: ledId, ledStatus}); // emit event.
+                var ledvalue = ($(this).hasClass('on')) ? "0.0" : "1.0"; // wanneer on bestaat return 1 in andere gevallen 0.
+                var data = {led:ledId, value: ledvalue };
+                socket.emit('led_value', data); // emit event.
             });
+            console.log($("[name='led-switch']"));
+            $("[name='led-switch']").bootstrapSwitch();
         });
 
 
@@ -61,7 +72,9 @@
 
 <body>
 	<h1>Status: <span id="status">disconnected</span></h1>
-	<button data-led="1" class="lichtknop">test</button>
+    <input type="checkbox" data-led="1" name="led-switch" checked>
+
+	<button data-led="1" class="lichtknop off">test</button>
 
 </body>
 
