@@ -28,9 +28,9 @@ io.on('connection', function (socket) {
   socket.on('disconnect', function(){
     console.log("Client disconnected");
   });
-  socket.on('led_switch', function (data) {
+  socket.on('led_value', function (data) {
     console.log(data);
-    socket.broadcast.emit('led', data); // { led: id van ledje, status: 1 == aan, 0 == uit }
+    socket.broadcast.emit('led_value', data); // { led: id van ledje, status: 1 == aan, 0 == uit }
   });
 
 });

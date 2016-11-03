@@ -4,7 +4,7 @@ body {
 body {
     font-family: "Trebuchet MS", Verdana, sans-serif;
     font-size: 16px;
-    background-color: dimgrey; 
+    background-color: #e2e2e2
     color: black;
     padding: 3px;
 }
@@ -25,16 +25,14 @@ h1 {
 }
 input[type='range'] {
 	-webkit-appearance: none;
-	padding-left:2px; padding-right:2px;
-	-webkit-border-radius: 5px;
-	width: 20%;
-	height: 30%;
+	-webkit-border-radius: 20px;
+	width: 100%;
 	left: 10px;
 }
 input[type=range] {
   -webkit-appearance: none;
   margin: 10px 0;
-  width: 30%;
+  width: 100%;
 }
 input[type=range]:focus {
   outline: none;

@@ -4,3 +4,6 @@
 .off {
     background-color: red;
 }
+.bootstrap-switch {
+    max-height: 30px;
+}
