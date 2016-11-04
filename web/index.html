@@ -51,6 +51,11 @@
         * Wacht totdat dom klaar is met laden.
         **/
         $(function(){
+            /**
+            * Deprecated.
+            * Werdt gebruikt voor de controle van de timer, het was handiger om gewoon de emit in de timer zelf te doen.
+            * return True | False.
+            **/
             function Interval(fn, time) {
                 var timer = false;
                 this.start = function () {
@@ -65,6 +70,11 @@
                     return timer !== false;
                 };
             }
+            /**
+            * Start een timer die aftelt. Het aftel mechanisme wordt niet gebruikt.
+            * @param duration, de duur in seconden (int)
+            * @param display, JQuery object die aangestuurd wordt en waar de data uitkomt.
+            **/
             function startTimer(duration, display) {
                 var timer = duration, minutes, seconds;
                 var test = null;
@@ -88,30 +98,40 @@
                 }, 1000);
             }
 
-            var leds = $("[name='led-switch']");
-            leds.bootstrapSwitch();
+            var leds = $("[name='led-switch']"); // maak jquery objecten met de switches
+            leds.bootstrapSwitch(); // zorg ervoor dat de bootstrapSwitch library deze elementen omzet.
 
             /**
             * Jquery listeners
             **/
+
+            /*
+            * switchChange.bootstrapswitch is een listener dat uit de bootstrap switch library komt.
+            * Hiermee kan gekeken worden of de waarde veranderd is.
+            **/
             $('.lichtknop').on('switchChange.bootstrapSwitch', function(event, state){
                 var ledId = $(this).data('led') | 0; // haal led id op.
-                $(this).bootstrapSwitch('disabled', true)
+                $(this).bootstrapSwitch('disabled', true) // zet switch uit totdat het pakketje terug is van de python client (Dit voorkomt spammen).
                 var ledvalue = (state) ? "1.0" : "0.0"; // wanneer on bestaat return 1 in andere gevallen 0.
-                var data = {led:ledId, value: ledvalue };
+                var data = {led:ledId, value: ledvalue }; 
                 socket.emit('led_value', data); // emit event.
-                console.log("tesdkkddk");
             });
+            /**
+            * De input van de slide wordt veranderd (ondrag).
+            **/
             $('.lichtdim').on('input', function(event){
-                $(this).trigger('change');
+                $(this).trigger('change'); // roep verandering aan.
                 var ledId = $(this).data('leddim') | 0; // haal led id op.
-                var data = {led:ledId, value: ($(this).val()/10).toFixed(1)};
+                var data = {led:ledId, value: ($(this).val()/10).toFixed(1)}; // zet de data van de slide om naar een float.
                 socket.emit('led_value', data); // emit event.
             });
+            /**
+            * Timer knoppen
+            **/
             $('.set-timer').on('click', function(event){
                 var id = $(this).data('timerstart'); // haal button op.
                 var input = $("[data-timer='"+id+"']"); // haal bijbehordende input op
-                startTimer(input.val(), input);
+                startTimer(input.val(), input); // start de timer
             });
 
         });
@@ -164,7 +184,7 @@
                 <h2>Lamp 5</h2>             
                 <input type="checkbox" data-led="4" name="led-switch" class="lichtknop">
                 <input type="range" class="lichtdim" name="bar0" data-leddim="4" min="0" max="10" step="1"/>
-                <label for="timer-4">Zet een timer (in seconden)</label>
+                <label for="timer-5">Zet een timer (in seconden)</label>
                 <input type="text" id="timer-5" class="form-control" data-timer="4"></input>
                 <button class="set-timer btn btn-primary" data-timerstart="4">Zet timer</button>
             </div>
